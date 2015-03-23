@@ -1,5 +1,4 @@
 // states and instructions
-
 typedef enum logic [1:0] {STATE_1 = 2'b00,
 							STATE_2 = 2'b01,
 							STATE_3 = 2'b10,
@@ -10,28 +9,22 @@ module controller(input logic clk1, clk2, reset,
                   output logic dataClk1, dataClk2, clearAccum,
                   output logic[1:0] muxControl);
 
-	//List of states
-	parameter STATE_1 = 2'b00;
-	parameter STATE_2 = 2'b01;
-	parameter STATE_3 = 2'b10;
-	parameter STATE_4 = 2'b11;
-
 	// State registers
 	statetype state;
 
-	statelogic statelog(ph1, ph2, reset, state);
+	statelogic statelog(clk1, clk2, reset, state);
 	outputlogic outputlog(state, dataClk1, dataClk2, clearAccum, muxControl);
 
 endmodule
 
-module statelogic(input  logic     ph1, ph2, reset,
+module statelogic(input  logic     clk1, clk2, reset,
                   output statetype state);
 
       statetype nextstate;
-  	  logic [1:0] ns, state_logic;
+  	  logic [1:0] nextstate, state_logic;
 
   	  // 
-	  regr #(2) statereg(ph1, ph2, nextstate, state_logic);
+	  regr #(2) statereg(clk1, clk2, nextstate, state_logic);
 
 	  assign state = statetype'(state_logic);
 
