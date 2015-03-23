@@ -24,7 +24,7 @@ module statelogic(input  logic     ph1, ph2, reset,
   	  logic [1:0] nextstate, state_logic;
 
   	  // 
-	  regr #(2) statereg(ph1, ph2, nextstate, state_logic);
+	  flopr #(2) statereg(ph1, ph2, reset, nextstate, state_logic);
 
 	  assign state = statetype'(state_logic);
 
