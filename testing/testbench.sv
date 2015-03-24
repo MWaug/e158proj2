@@ -24,7 +24,8 @@ module testbench();
   initial
     begin
       // C:\Users\maxwaug\Google Drive\E 158\proj2\SourceTree\testing
-      $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      // $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
       vecnum = 0;
       reset <= 1; # 20; reset <= 0;
     end
