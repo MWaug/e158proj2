@@ -6,14 +6,14 @@ typedef enum logic [1:0] {STATE_1 = 2'b00,
 							} statetype;
 
 module controller(input logic ph1, ph2, reset,
-                  output logic dataClk1, dataClk2, clearAccum,
+                  output logic dataClk1, clearAccum,
                   output logic[1:0] muxControl);
 
 	// State registers
 	statetype state;
 
 	statelogic statelog(ph1, ph2, reset, state);
-	outputlogic outputlog(state, dataClk1, dataClk2, clearAccum, muxControl);
+	outputlogic outputlog(state, ph2, dataClk1, clearAccum, muxControl);
 
 endmodule
 
@@ -41,7 +41,8 @@ endmodule
 
 
 module outputlogic(input statetype state,
-                   output logic dataClk1, dataClk2, clearAccum,
+				   input logic ph2,
+                   output logic dataClk1, clearAccum,
                    output logic[1:0] muxControl);
     // Output logic
     always_comb
@@ -51,21 +52,24 @@ module outputlogic(input statetype state,
 	 	    begin 
 		    	muxControl = 2'b00;
 		    	dataClk1 = 0;
+		    	clearAccum = 0;
 		    end
 		    STATE_2 : 
 	 	    begin 
 		    	muxControl = 2'b01;
 		    	dataClk1 = 0;
+		    	clearAccum = 0;
 		    end
 		    STATE_3 : 
 	 	    begin 
 		    	muxControl = 2'b10;
 		    	dataClk1 = 0;
+		    	clearAccum = 0;
 		    end
 		    STATE_4 : 
 	 	    begin 
 		    	muxControl = 2'b11;
-		    	dataClk1 = 1;
+		    	dataClk1 = ph2;
 		    	clearAccum = 1;
 		    end
 		default: muxControl = 2'b00;

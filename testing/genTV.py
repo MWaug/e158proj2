@@ -1,9 +1,14 @@
-alist = [5, 3, 2, 1, 5, 6, 7, 30]
-clist = [3]
+import random
+alist = random.sample(range(0, 255), 255) 
+clist = [255, 255, 255, 255]
 
 # Create testvector file
 filename = 't1.v'
 f = open(filename, 'w')
+
+# Skip the reset period
+for i in xrange(8):
+	f.write('0_0_00000000\n')
 
 # Generate coefficient list
 for coef in clist:
@@ -18,7 +23,7 @@ for coef in clist:
 	for bit in bC:
 		# Toggle shiftClk1 to shift in the bit
 		f.write('1_' + bit + '_00000000\n')
-		f.write('0_' + bit + '_00000000\n')
+		# f.write('0_' + bit + '_00000000\n')
 
 # Run through the data vectors
 for a in alist:
