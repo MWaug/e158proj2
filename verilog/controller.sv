@@ -21,9 +21,10 @@ module statelogic(input  logic     ph1, ph2, reset,
                   output statetype state);
 
       statetype nextstate;
-
+      logic [1:0] state_logic;
   	  // 
 	  flopr #(2) statereg(ph1, ph2, reset, nextstate, state_logic);
+	  assign state = statetype'(state_logic);
 
 	  // Next state logic
 	  always_comb
