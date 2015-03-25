@@ -8,13 +8,15 @@ module testbench();
 
   // Example testvector
   // tv =      0   _   0    _00000000
-  //     shiftph1, shiftIn,     a
+  //     shiftClkEn, shiftIn,     a
 
   // Store the list of testvectors
   logic [9:0] testvector[2097151:0];
   logic [15:0] vecnum; // index of the current testvector
   logic [9:0] tv;      // current testvector
   logic[7:0] t0, t1, t2, t3;
+  logic [31:0] errors;
+  logic [31:0] correct;
 
   // Calculate the correct value given the test vectors
   always_comb 
@@ -40,6 +42,8 @@ module testbench();
       // $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
       $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
       vecnum = 0;
+      errors = 0;
+      correct = 0;
       reset <= 1; # 20; reset <= 0;
     end
 
@@ -62,6 +66,9 @@ module testbench();
           dut.dp.c0, dut.dp.c1, dut.dp.c2, dut.dp.c3);
         $display("a0 %d, a1 %d, a2 %d, a3 %d", a0, a1, a2, a3);
         $display("@%0dns",$time);
+        errors = errors +1;
+      end else begin
+        correct = correct + 1:
       end
   end
   end

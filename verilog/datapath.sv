@@ -8,8 +8,12 @@ module datapath(input logic ph1, ph2, shiftIn, shiftClk1, shiftClk2,
 	logic s1, s2, s3;
 	logic [7:0] a0, a1, a2, a3, c0, c1, c2, c3;
 	logic [17:0] accumQ, accumD;
+
+	// Mux's to select the coefficient and data
 	mux4 #(8) m4d( a0, a1, a2, a3, muxControl, dOut);	
 	mux4 #(8) m4c(c0, c1, c2, c3, muxControl, coef);	
+
+	// 18 bit adder
 	adder #(18) add({2'b00, multResult}, accumQ, accumD);
 
 	// Data delay registers

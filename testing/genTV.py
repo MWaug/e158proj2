@@ -1,6 +1,6 @@
 import random
 alist = random.sample(range(0, 255), 255) 
-clist = [255, 255, 255, 255]
+clist = [0, 255, 255, 255]
 
 # Create testvector file
 filename = 't1.v'
@@ -36,4 +36,7 @@ for a in alist:
 
 f.close()
 
-
+# Add set to coefficients tested
+f = open('testList.txt', 'a')
+f.write(str(clist)+ '\n')
+f.close()
