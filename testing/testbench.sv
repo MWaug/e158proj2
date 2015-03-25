@@ -3,19 +3,34 @@ module testbench();
 
   logic ph1, ph2, reset, shiftIn, shiftClk1, shiftClk2;
   logic [7:0] a, a0, a1, a2, a3, testa;
-  logic [15:0] y;
-  logic [17:0] accum;
-  logic [15:0] result;
+  logic [17:0] y;
+  logic [17:0] result;
 
   // Example testvector
   // tv =      0   _   0    _00000000
-  //     shiftph1, shiftIn,     a
+  //     shiftClkEn, shiftIn,     a
 
   // Store the list of testvectors
   logic [9:0] testvector[2097151:0];
   logic [15:0] vecnum; // index of the current testvector
   logic [9:0] tv;      // current testvector
-  assign result = accum[17:2];
+  logic[7:0] t0, t1, t2, t3;
+  logic [31:0] errors;
+  logic [31:0] correct;
+
+  // Calculate the correct value given the test vectors
+  always_comb 
+  begin
+    t0 = testvector[vecnum -4];
+    t1 = testvector[vecnum -8];
+    t2 = testvector[vecnum -12];
+    t3 = testvector[vecnum -16];
+    a0 = t0[7:0];
+    a1 = t1[7:0];
+    a2 = t2[7:0];
+    a3 = t3[7:0];
+    result = dut.dp.c0 * a0 + dut.dp.c1 * a1 + dut.dp.c2 * a2 + dut.dp.c3 * a3;
+  end
 
   // instantiate device to be tested
   top dut(.*); 
@@ -24,8 +39,11 @@ module testbench();
   initial
     begin
       // C:\Users\maxwaug\Google Drive\E 158\proj2\SourceTree\testing
-      $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      // $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
       vecnum = 0;
+      errors = 0;
+      correct = 0;
       reset <= 1; # 20; reset <= 0;
     end
 
@@ -39,30 +57,28 @@ module testbench();
     end
 
   // Check results on each new data cycle
-  always @(negedge dut.dataClk2)
+  always @(negedge dut.dataClk1)
   begin
-    a3 = a2;
-    a2 = a1;
-    a1 = a0;
-    a0 = a;
-    accum = dut.dp.c0 * a0 + dut.dp.c1 * a1 + dut.dp.c2 * a2 + dut.dp.c3 * a3;
-    if( result !== y ) begin
-      $display("Expected %d, actual %d", result, y);
-      $display("c0 %d, c1 %d, c2 %d, c3 %d", 
-        dut.dp.c0, dut.dp.c1, dut.dp.c2, dut.dp.c3);
-      $display("a0 %d, a1 %d, a2 %d, a3 %d", a0, a1, a2, a3);
-      $display("@%0dns",$time);
-    end
+    if(vecnum > 16) begin
+      if( result !== y ) begin
+        $display("Expected %d, actual %d", result, y);
+        $display("c0 %d, c1 %d, c2 %d, c3 %d", 
+          dut.dp.c0, dut.dp.c1, dut.dp.c2, dut.dp.c3);
+        $display("a0 %d, a1 %d, a2 %d, a3 %d", a0, a1, a2, a3);
+        $display("@%0dns",$time);
+        errors = errors +1;
+      end else begin
+        correct = correct + 1:
+      end
   end
-
+  end
+  
+  logic shiftClkEn;
   // Make the second shift clock follow the first
-  always @(negedge shiftClk1)
+  always_comb
   begin
-    shiftClk2 <= 1; 
-  end
-  always @(posedge shiftClk1)
-  begin
-    shiftClk2 <= 0;
+    shiftClk1 = shiftClkEn & ph1;
+    shiftClk2 = shiftClkEn & ph2;
   end
 
   // Increment through the testvectors
@@ -71,7 +87,7 @@ module testbench();
     tv = testvector[vecnum];
     a = tv[7:0];
     shiftIn = tv[8];
-    shiftClk1 = tv[9];
+    shiftClkEn = tv[9];
     vecnum = vecnum +1;
   end
 
