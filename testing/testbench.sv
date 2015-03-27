@@ -39,8 +39,8 @@ module testbench();
   initial
     begin
       // C:\Users\maxwaug\Google Drive\E 158\proj2\SourceTree\testing
-      // $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
-      $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      // $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
       vecnum = 0;
       errors = 0;
       correct = 0;
@@ -68,7 +68,7 @@ module testbench();
         $display("@%0dns",$time);
         errors = errors +1;
       end else begin
-        correct = correct + 1:
+        correct = correct + 1;
       end
   end
   end

@@ -1,6 +1,6 @@
 import random
 alist = random.sample(range(0, 255), 255) 
-clist = [0, 255, 255, 255]
+clist = [1, 10, 2, 5]
 
 # Create testvector file
 filename = 't1.v'

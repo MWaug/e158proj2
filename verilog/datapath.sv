@@ -14,9 +14,11 @@ module datapath(input logic ph1, ph2, shiftIn, shiftClk1, shiftClk2,
 	mux4 #(8) m4c(c0, c1, c2, c3, muxControl, coef);	
 
 	// 18 bit adder
+		// Separate these into 8 and 10 bit flop
 	adder #(18) add({2'b00, multResult}, accumQ, accumD);
 
 	// Data delay registers
+	// Fix this - clock enable
 	flopr #(8) d0(ph1, dataClk1, reset, a, a0);
 	flopr #(8) d1(ph1, dataClk1, reset, a0, a1);
 	flopr #(8) d2(ph1, dataClk1, reset, a1, a2);
@@ -29,9 +31,11 @@ module datapath(input logic ph1, ph2, shiftIn, shiftClk1, shiftClk2,
 	sflop_8 c3reg(shiftClk1, shiftClk2, c2[7], c3);
 
 	// Accumulate register
+	// Separate these into 8 and 10 bit flop
 	flopr #(18) acc(ph1, ph2, clearAccum, accumD, accumQ);
 
 	// Output register
+	// Fix this with enabled flops
 	flopr #(18) r(dataClk1, ph2, reset, accumD, y);
 
 endmodule
