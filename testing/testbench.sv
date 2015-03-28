@@ -21,10 +21,10 @@ module testbench();
   // Calculate the correct value given the test vectors
   always_comb 
   begin
-    t0 = testvector[vecnum -4];
-    t1 = testvector[vecnum -8];
-    t2 = testvector[vecnum -12];
-    t3 = testvector[vecnum -16];
+    t0 = testvector[vecnum -8];
+    t1 = testvector[vecnum -12];
+    t2 = testvector[vecnum -16];
+    t3 = testvector[vecnum -20];
     a0 = t0[7:0];
     a1 = t1[7:0];
     a2 = t2[7:0];
@@ -39,8 +39,8 @@ module testbench();
   initial
     begin
       // C:\Users\maxwaug\Google Drive\E 158\proj2\SourceTree\testing
-      $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
-      // $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      // $readmemb("C:/Users/maxwaug/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
+      $readmemb("D:/Max/Google Drive/E 158/proj2/SourceTree/testing/t1.v", testvector);
       vecnum = 0;
       errors = 0;
       correct = 0;
@@ -57,15 +57,16 @@ module testbench();
     end
 
   // Check results on each new data cycle
-  always @(negedge dut.dataClk1)
+  always @(posedge dut.dp.enData )
   begin
-    if(vecnum > 16) begin
+    if(vecnum > (20 + 42)) begin
       if( result !== y ) begin
         $display("Expected %d, actual %d", result, y);
         $display("c0 %d, c1 %d, c2 %d, c3 %d", 
           dut.dp.c0, dut.dp.c1, dut.dp.c2, dut.dp.c3);
         $display("a0 %d, a1 %d, a2 %d, a3 %d", a0, a1, a2, a3);
-        $display("@%0dns",$time);
+        $display("vecnum %d",vecnum);
+        $display("@%0dps",$time);
         errors = errors +1;
       end else begin
         correct = correct + 1;
@@ -89,6 +90,12 @@ module testbench();
     shiftIn = tv[8];
     shiftClkEn = tv[9];
     vecnum = vecnum +1;
+  end
+
+  final
+  begin
+      $display("correct %d", correct);
+      $display("incorrect %d", errors);
   end
 
 endmodule

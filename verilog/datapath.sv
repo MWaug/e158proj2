@@ -1,5 +1,5 @@
 module datapath(input logic ph1, ph2, shiftIn, shiftClk1, shiftClk2,
-				reset, dataClk1, clearAccum, 
+				reset, enData, clearAccum, 
 				input logic[1:0]  muxControl,
 				input logic[15:0] multResult,
 				input logic[7:0]  a,
@@ -19,10 +19,10 @@ module datapath(input logic ph1, ph2, shiftIn, shiftClk1, shiftClk2,
 
 	// Data delay registers
 	// Fix this - clock enable
-	flopr #(8) d0(ph1, dataClk1, reset, a, a0);
-	flopr #(8) d1(ph1, dataClk1, reset, a0, a1);
-	flopr #(8) d2(ph1, dataClk1, reset, a1, a2);
-	flopr #(8) d3(ph1, dataClk1, reset, a2, a3);
+	flopenr #(8) d0(ph1, ph2, reset, enData, a, a0);
+	flopenr #(8) d1(ph1, ph2, reset, enData, a0, a1);
+	flopenr #(8) d2(ph1, ph2, reset, enData, a1, a2);
+	flopenr #(8) d3(ph1, ph2, reset, enData, a2, a3);
 
 	// Coefficient shift registers
 	sflop_8 c0reg(shiftClk1, shiftClk2, shiftIn, c0);
@@ -36,6 +36,6 @@ module datapath(input logic ph1, ph2, shiftIn, shiftClk1, shiftClk2,
 
 	// Output register
 	// Fix this with enabled flops
-	flopr #(18) r(dataClk1, ph2, reset, accumD, y);
+	flopenr #(18) r(ph1, ph2, reset, enData, accumD, y);
 
 endmodule
