@@ -5,9 +5,9 @@ module top(input logic ph1, ph2, shiftClk1, shiftClk2,
     logic clearAccum, enData;
     logic[1:0] muxControl;
     logic[7:0] coef, dOut;
-    logic[15:0] multResult;
+    logic[15:0] multR;
 
     datapath dp(.*);
     controller c(.*);
-    multiplier #(8) m(coef, dOut, multResult);
+    multiplier #(8) m(coef, dOut, multR);
 endmodule
